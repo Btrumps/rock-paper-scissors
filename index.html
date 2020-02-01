@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button-labels {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .text{
+            text-align: center;
+        }
+
+        #instructions {
+            padding-top: 20px;
+        }
+
+        #score {
+            padding: 20px;
+        }
+
+        button {
+            margin: 0px 75px;
+            width: 180px;
+            height: 100px;
+            color: white;
+            background-position: center;
+            background-color: transparent;
+            border: 0px;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        .text-label {
+            display: inline-block;
+            padding: 10px;
+            margin:auto;
+        }
+
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        </style>
+    </head>
+
+    <body>
+        <div class="main">
+            <div class="text">
+                <p id="instructions">Choose your weapon</p>
+                <p id="score"></p>
+            </div>
+            <div class="button-container">
+                <button id="rock" onclick="playRound(this)"><img src="https://www.pngitem.com/pimgs/m/109-1094400_rock-paper-scissors-png-clipart-rock-paper-scissor.png"  height = 100px;></button>
+                <button id="paper" onclick="playRound(this)"><img src="https://www.pngitem.com/pimgs/m/266-2667252_transparent-rock-paper-scissors-clipart-rock-paper-scissors.png"  height = 100px;></button>
+                <button id="scissors" onclick="playRound(this)"><img src="https://www.clipartkey.com/mpngs/m/5-54540_rock-paper-scissors-random-rock-paper-scissors-png.png"  height = 100px;></button>
+            </div>
+            <div class="button-labels">
+                <p class="text-label">Rock</p>
+                <p class="text-label">Paper</p>
+                <p class="text-label">Scissors</p>
+            </div>
+        </div>
+
+        <script>
+            const rpsOptions = ['rock', 'paper', 'scissors'];
+            const DEFAULT_WINNING_SCORE = 3;
+            var playerSel;
+            var computerSel;
+            var winningScore = 10;
+            var playerScore = 0;
+            var computerScore = 0;
+
+            function computerPlay(){
+                return rpsOptions[Math.floor(Math.random() * 3)]; 
+            }
+
+            function playRound(button) {
+                var result = false; // false means you lose
+                playerSel = button.id;
+                computerSel = computerPlay();
+                
+
+                if (playerSel == computerSel) {
+                    console.log("It's a tie!");
+                } else if(playerSel == 'rock' && computerSel == 'scissors') {
+                    result = true;
+                } else if(playerSel == 'scissors' && computerSel == 'paper') {
+                    result = true;
+                } else if(playerSel == 'paper' && computerSel == 'rock') {
+                    result = true;
+                }
+
+                displayResults(playerSel, computerSel, result);
+
+            }
+
+            function displayResults(playerSel, computerSel, result) {
+                var winner = document.querySelector('#instructions');
+                var score = document.querySelector('#score');
+                var computerIcon = document.querySelector(`#${computerSel}`);
+                var playerIcon = document.querySelector(`#${playerSel}`);
+                var icons = document.querySelectorAll('button');
+
+                winner.innerHTML = victoryMessage(result, playerSel, computerSel);
+                score.innerHTML = `Computer: ${computerScore}, Player: ${playerScore}`;
+
+                if ((playerScore  >= winningScore) || (computerScore >= winningScore)) {
+                    hideButtons(true);
+                }
+            }
+            
+            function victoryMessage(victoryCondition, playerSel, computerSel) {
+                playerSel = playerSel[0].toUpperCase() + playerSel.slice(1);
+                computerSel = computerSel[0].toUpperCase() + computerSel.slice(1);
+
+                if (playerSel === computerSel) {
+                    return `Tie! You both picked ${playerSel}.`;
+                } else if (victoryCondition === true) {
+                    playerScore++;
+                    if (playerScore >= winningScore) {
+                        return `You win the game! ${playerSel} beats ${computerSel}`;
+                    } else {
+                        return `You Win! ${playerSel} beats ${computerSel}`;
+                    }
+                } else {
+                    computerScore++;
+                    if (computerScore >= winningScore) {
+                        return `The computer wins the game! ${computerSel} beats your ${playerSel}`;
+                    } else {
+                        return `You Lose! ${computerSel} beats ${playerSel}`;
+                    }
+                }
+            }
+
+            function hideButtons(hide) {
+                var buttons = document.getElementsByClassName("button-container");
+                var buttonsText = document.getElementsByClassName("button-labels");
+                if (hide) {
+                    buttons[0].style.display = 'none';
+                    buttonsText[0].style.display = 'none';
+                } else {
+                    buttons[0].style.display = "flex";
+                    buttonsText[0].style.display = "flex";
+                }
+            }
+
+            function resetScores() {
+                computerScore = 0;
+                playerScore = 0;
+            }
+
+            function newGame() {
+                winningScore = prompt("What score would you like to play to?");
+                if (winningScore === null || winningScore == 0) {
+                    winningScore = DEFAULT_WINNING_SCORE;
+                }
+            }
+
+            newGame();
+
+        </script>
+    </body>
+</html>
